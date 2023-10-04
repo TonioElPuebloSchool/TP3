@@ -20,17 +20,4 @@ def root():
 @app.route('/logger', methods=['GET', 'POST'])
 def logger():
     print("logger  succeed")
-    if request.method == 'POST':
-        log_message = request.form['log_message']
-        
-        # Print the log message on the server-side (Python)
-        app.logger.warning(f"Log message from Python: {log_message}")
-
-        # Create JavaScript code to log a message on the browser's console
-        log_browser = f'<script>console.log("Log message from browser: {log_message}");</script>'
-        
-        return log_browser
-    
-    
-    # Render a simple HTML form to input the log message
-    return "Voici un beau log !!"
+    text_toshow = "logger succeed"
