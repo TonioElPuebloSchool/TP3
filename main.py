@@ -19,7 +19,7 @@ def root():
 
 @app.route('/logger', methods=['GET', 'POST'])
 def logger():
-
+    print("logger  succeed")
     if request.method == 'POST':
         log_message = request.form['log_message']
         
