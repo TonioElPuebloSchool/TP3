@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Logger App</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PVE1J5NDNL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-PVE1J5NDNL');
+    </script>
+</head>
+<body style="text-align: left;">
+    <div class="container">
+        <h1>Welcome to Antoine's webpage</h1>
+    </div>
+    <div class="container">
+        <p style="text-align: left;">Enter a log to display it:</p>
+        <form method="POST" class="button-container">
+            <textarea name="log" rows="4" cols="50"></textarea><br><br>
+            <div class="show-log-container">
+                <button type="submit" class="show-log">Show Log</button>
+            </div>
+        </form>
+        <br>
+        <p style="text-align: left;">Logged Text:</p>
+        <p style="text-align: left;">{{ log_text }}</p>
+    </div>
+
+    <!-- Separate container for number of visitors and refresh button -->
+    <div class="visitors-container">
+        <div>
+            <p style="text-align: left;">Number of Visitors:</p>
+            <p style="text-align: left;">{{ number_of_visitors }}</p>
+        </div>
+        <button type="button" class="refresh-visitors">Refresh Visitors</button>
+    </div>
+
+    
+    <script>
+        console.log("{{ log_text }}");
+    </script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+/* styles.css */
+body {
+  background-color: #100444;
+  font-family: 'Open Sans', sans-serif;
+  text-align: left; /* Align text to the left */
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center; /* Center content within the container */
+  /* add bottom margin to the container */
+  margin-bottom: 20px;
+  /* add top margin to the container */
+  margin-top: 20px;
+}
+
+.visitors-container {
+  max-width: 600px;
+  /* add a height to the container */
+  height: 150px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center; /* Center content within the container */
+  /* add bottom margin to the container */
+  margin-bottom: 20px;
+  /* add top margin to the container */
+  margin-top: 20px;
+}
+
+h1 {
+  color: #415ac9;
+  font-family: 'Open Sans', sans-serif;
+  text-align: left;
+}
+
+textarea {
+  width: 50%;
+  padding: 20;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Add this style for the button */
+button.show-log {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  float: left;
+}
+
+/* Align the button to the left */
+button.show-log-container {
+  text-align: left;
+}
+
+/* Add this style for the button */
+button.refresh-visitors {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  float: left;
+}
+
+/* Align the button to the left */
+button.refresh-visitors {
+  text-align: left;
+}
