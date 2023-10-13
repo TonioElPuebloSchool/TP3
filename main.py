@@ -1,96 +1,11 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, jsonify
 import requests
 import streamlit as st
 import argparse
 from oauth2client import client, file, tools
-
+import os
 
 app = Flask(__name__)
-
-
-# we first need to ask for authentification to google analytics
-credential_path = "client_secret.json"
-refresh_token = "refresh_token.json"
-scopes = ['https://www.googleapis.com/auth/analytics.readonly']
-
-parser = argparse.ArgumentParser(
-    formatter_class=argparse.RawDescriptionHelpFormatter,
-    parents=[tools.argparser])
-flags = parser.parse_args([])
-flow = client.flow_from_clientsecrets(
-    credential_path, scope=scopes,
-    message=tools.message_if_missing(credential_path))
-storage = file.Storage(refresh_token)
-credentials = storage.get()
-if credentials is None or credentials.invalid:
-    credentials = tools.run_flow(flow, storage, flags)
-
-# now we need to generate a new access token
-def generate_access_token(client_ID, client_secret, refresh_token, scopes, grant_type='refresh_token'):
-    access_token = None
-    api_endpoint = 'https://accounts.google.com/o/oauth2/token'
-    scopes = 'https://www.googleapis.com/auth/analytics.readonly'
-    
-    url = f"{api_endpoint}?client_id={client_ID}&client_secret={client_secret}&refresh_token={refresh_token}&grant_type={grant_type}&scopes={scopes}"
-    
-    payload = {}
-    headers = {}
-    
-    response = requests.request("POST", url, headers=headers, data=payload)
-    
-    if response.status_code == 200:
-        access_token = response.json()['access_token']
-        
-    return access_token
-
-# we can now make a request to google analytics
-access_token = generate_access_token(client_ID=credentials.client_id, client_secret=credentials.client_secret, refresh_token=credentials.refresh_token, scopes=scopes)
-property_id = "407510831"
-start_date = "2023-01-01"
-end_date = "2023-12-10"
-iteration = 1
-dimensions = ["dateHour", "sessionCampaignId", "sessionCampaignName", "sessionManuelTerm", "sessionMedium", "sessionSource", "pageReferrer"]
-metrics = ["sessions", "newUsers", "totalUsers"]
-
-def ga4_api_response(access_token, property_id, start_date, end_date, iteration, dimensions, metrics, limit=1000):
-    url = f"https://analyticsreporting.googleapis.com/v1beta/{property_id}/batchRunReports"
-    
-    request_body = {
-        "reportRequests": [
-            {
-                "viewId": f"{property_id}",
-                "dateRanges": [
-                    {
-                        "startDate": f"{start_date}",
-                        "endDate": f"{end_date}"
-                    }
-                ],
-                "dimensions": [{"name": name} for name in dimensions],
-                "metrics": [{"name": name} for name in metrics],
-                "limit": limit,
-                "offset": (iteration)*limit
-            }
-        ]
-    }
-    payload = f"""{request_body}"""
-    headers = {
-        'Content-Type': 'application/json',
-        "Accept": "application/json",
-        "Authorization": f"Bearer {str(access_token)}"
-    }
-    
-    try:
-        response = requests.request("POST", url, headers=headers, data=payload)
-    except Exception as e:
-        print(e)
-        response = None
-    
-    return response
-
-# we can now make a request to google analytics
-response = ga4_api_response(access_token=access_token, property_id=property_id, start_date=start_date, end_date=end_date, iteration=iteration, dimensions=dimensions, metrics=metrics, limit=1000)
-print(response)
-
 
 @app.route("/", methods=['GET', 'POST'])
 def root():
@@ -105,10 +20,56 @@ def root():
         print(log_text)
     
     # Retrieve the number of visitors from Google Analytics
-    number_of_visitors = response #get_number_of_visitors()
+    number_of_visitors = 10 #get_number_of_visitors()
     
     return render_template('home.html', log_text=log_text, number_of_visitors=number_of_visitors)
 
+# add route to calculate number of visitors
+@app.route('/refresh-visitors', methods=['GET'])
+def refresh_visitors():
+    
+    starting_date = request.args.get('start_date')
+    ending_date = request.args.get('end_date')
+
+    property_id = "407510831"
+    dimensions = ["sessionSource"]
+    metrics = ["newUsers", "totalUsers"]
+
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'datasource.json'
+
+    from google.analytics.data_v1beta import BetaAnalyticsDataClient
+    from google.analytics.data_v1beta.types import (
+        DateRange,
+        Dimension,
+        Metric,
+        RunReportRequest,
+    )
+    client = BetaAnalyticsDataClient()
+
+    request_api = RunReportRequest(
+        property=f"properties/{property_id}",
+        dimensions=[
+            Dimension(name=dim) for dim in dimensions
+            ],
+            metrics=[
+                Metric(name=metr) for metr in metrics
+            ],
+            date_ranges=[DateRange(start_date=starting_date, end_date=ending_date)],
+        )
+    response = client.run_report(request_api)
+
+    # retreive value of metric header totalUsers
+    metric_header = [header.name for header in response.metric_headers]
+    metrics = [0 for i in metric_header]
+    for i in range(len(metric_header)):
+        for row in response.rows :
+            metrics[i]  += (int(row.metric_values[i].value))
+    # now metrics[0] is new users and metrics[1] is total users
+    print(metrics)
+    return jsonify({
+        "new_users": metrics[0],  # Update with the calculated new users count
+        "total_users": metrics[1],  # Update with the calculated total users count
+    })
 
 @app.route("/logger", methods=['GET', 'POST'])
 def logger():

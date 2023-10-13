@@ -24,7 +24,7 @@ body {
 .visitors-container {
   max-width: 600px;
   /* add a height to the container */
-  height: 150px;
+  height: 400;
   margin: 0 auto;
   padding: 20px;
   background-color: #ffffff;
@@ -44,7 +44,8 @@ h1 {
 }
 
 textarea {
-  width: 50%;
+  width: 75%;
+  height: 40px;
   padding: 20;
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
@@ -68,7 +69,26 @@ button.show-log-container {
   text-align: left;
 }
 
-/* Add this style for the button */
+/* Align the button to the left */
+button.refresh-visitors {
+  text-align: left;
+}
+
+input.date-input {
+  width: 50%;
+  padding: 10px; /* Reduce padding to make it smaller */
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Add styles for labels (bold text) */
+label {
+  font-weight: bold;
+}
+
+/* Add styles for the button */
 button.refresh-visitors {
   background-color: #007BFF;
   color: white;

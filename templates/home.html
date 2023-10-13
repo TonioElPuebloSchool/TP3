@@ -32,18 +32,48 @@
         <p style="text-align: left;">{{ log_text }}</p>
     </div>
 
-    <!-- Separate container for number of visitors and refresh button -->
-    <div class="visitors-container">
-        <div>
-            <p style="text-align: left;">Number of Visitors:</p>
-            <p style="text-align: left;">{{ number_of_visitors }}</p>
-        </div>
-        <button type="button" class="refresh-visitors">Refresh Visitors</button>
+<!-- Separate container for number of visitors and refresh button -->
+<div class="visitors-container">
+    <div>
+        <label for="start-date" style="width: 130px; display: inline-block;">Start date:</label>
+        <input type="text" id="start-date" value="28daysAgo" placeholder="28daysAgo" class="date-input">
     </div>
-
-    
+    <div>
+        <label for="end-date" style="width: 130px; display: inline-block;">End date:</label>
+        <input type="text" id="end-date" value="yesterday" placeholder="yesterday" class="date-input">
+    </div>
+    <button type="button" class="refresh-visitors" id="refresh-visitors">Refresh Visitors</button>
+    <br>
+    <p style="text-align: left; width: 500px;">
+        Total of <strong>new users</strong> during the selected period: <span id="new-users">{{ number_of_visitors.new_users }}</span>
+    </p>
+    <p style="text-align: left; width: 500px;">
+        Total of <strong>users</strong> during the selected period: <span id="total-users">{{ number_of_visitors.total_users }}</span>
+    </p>
+        </div>
     <script>
         console.log("{{ log_text }}");
     </script>
+    <script>
+        const refreshButton = document.getElementById('refresh-visitors');
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        const newUsers = document.getElementById('new-users');
+        const totalUsers = document.getElementById('total-users');
+    
+        refreshButton.addEventListener('click', () => {
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+    
+            // Send an AJAX request to your Flask route with the selected dates
+            fetch(`/refresh-visitors?start_date=${startDate}&end_date=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    newUsers.textContent = data.new_users;  // Update new users count
+                    totalUsers.textContent = data.total_users;  // Update total users count
+                });
+        });
+    </script>
+    
 </body>
 </html>
