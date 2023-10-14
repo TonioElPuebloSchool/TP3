@@ -105,7 +105,7 @@ def perform_google_request():
 @app.route("/streamlit")
 def streamlit_link():
     # Redirect to the URL where you're running the Streamlit app
-    return redirect("http://localhost:8501")  # Replace with the actual URL of your Streamlit app
+    return redirect("http://localhost:8501")
 
 
 if __name__ == '__main__':
