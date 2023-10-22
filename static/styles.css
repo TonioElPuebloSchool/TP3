@@ -21,6 +21,21 @@ body {
   margin-top: 20px;
 }
 
+.google-container {
+  max-width: 600px;
+  height: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center; /* Center content within the container */
+  /* add bottom margin to the container */
+  margin-bottom: 20px;
+  /* add top margin to the container */
+  margin-top: 20px;
+} 
+
 .visitors-container {
   max-width: 600px;
   /* add a height to the container */

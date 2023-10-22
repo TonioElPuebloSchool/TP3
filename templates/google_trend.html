@@ -4,21 +4,32 @@
     <title>Google Trends Parameters</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .left-align {
+            text-align: left;
+            margin-left: 10px; /* Add left margin for better alignment */
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
+    <div class="google-container">
         <h1>Google Trends Parameters</h1>
         <form method="POST">
             <label for="keywords">Keywords:</label>
             <input type="text" name="keywords" id="keywords" value="{{ keywords }}" required><br><br>
             <label for="timeframe">Timeframe:</label>
             <input type="text" name="timeframe" id="timeframe" value="{{ timeframe }}" required><br><br>
-            <label for="">Click the button below to update the chart</label><br>
-            <button type="submit" class="show-log">Update Parameters</button>
+            <div class="left-align">
+                <label for="update-chart-label">Click the button below to update the chart</label><br>
+                <button type="submit" class="show-log">Update Parameters</button>
+            </div>
         </form>
         <br>
-        <label for="">Go back to home page</label><br><br><br>
-        <a href="/"><button class="btn-home">Back to Home</button></a> <!-- Apply the "btn-home" class -->
+        <div class="left-align">
+            <label for="empty-label"> </label><br>
+            <label for="back-to-home-label">Go back to home page</label><br>
+            <a href="/"><button class="btn-home">Back to Home</button></a> <!-- Apply the "btn-home" class -->
+        </div>
     </div>
     <div class="chart-container">
         <canvas id="google-trend-chart"></canvas>

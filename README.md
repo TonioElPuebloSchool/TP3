@@ -3,113 +3,91 @@
 ## Data Sources
 **P2024** antoine-courbi
 
-# Digital traces TP2
+# Digital traces TP3
 
 ### Created by Antoine Courbi
 -----
 ### [*Moodle course*](https://moodle.epf.fr/course/view.php?id=9502&section=1)
 ### [*Github depository*](https://github.com/TonioElPuebloSchool/TP1)
+### [*PDF TP*]()
 -----
 
 This **README** is meant to explain `how the app works` and what was done during the `TP`.
 
 # **Useful links**
-The web page is accessible here : https://tp2deta-1-r1097488.deta.app/  
+The web page is accessible here : https://tp3deta-1-q0219281.deta.app/  
 Deta dashboard is accessible here (that’s for me) : https://deta.space/  
 Google analytics is accessible here (again for me) : https://analytics.google.com/analytics/web/#/p407510831/realtime/overview?params=_u..nav%3Dmaui  
-The public git project repository is accessible here : https://github.com/TonioElPuebloSchool/TP2  
+The public git project repository is accessible here : https://github.com/TonioElPuebloSchool/TP3  
 Console google API (for me) : https://console.cloud.google.com/apis/dashboard?project=datasource-401916
 
+
 # **What we did**
-We used python and Flask to display log on python and on the browser (visible from the detalog and from the console of the browser running the webpage). We printed a message in a textbox as well.
-We used requests to manipulate cookies on google and on our ganalytics to display them. We tried to use streamlit to display the cookies.
-Finally, we used oauth2client to display specific cookies about our webpage (ganalytics views).
+We learned what GDPR was, how it has evolved and what changed with it apparition.
+We developed a new route in the web app to display google trend graphics using pytrends (generate data like google trend) and ChartJS (display a chart in a flask application).
+We learned what a decorator was, we implement one that logs the execution time of a function. We used it to compare two occurrence methods and performed statistics on the results.
+
+# **Ressources**
+GDPR website : https://gdpr-info.eu/art-1-gdpr/  
+Pytrends github doc : https://github.com/GeneralMills/pytrends  
+Pytrends example : https://medium.com/@sinabaghaee96/data-extraction-from-google-trends-with-pytrends-1a89e33412bb  
+ChartJS useful example : https://www.geeksforgeeks.org/how-to-add-graphs-to-flask-apps/  
+Decorator information : https://www.datacamp.com/tutorial/decorators-python
 
 
 # **How to run the app**
-The app is running on https://tp2deta-1-r1097488.deta.app/.  
+The app is running on https://tp3deta-1-q0219281.deta.app/.  
 You can enter a message and submit it and it will appear on the console log of the browser, on the deta log and on the webpage.  
-You can also select a start date and an end date and submit it to display the cookies of the google analytics of the webpage, specifically the views (newUsers and totalUsers).
+You can also select a start date and an end date and submit it to display the cookies of the google analytics of the webpage, specifically the views (newUsers and totalUsers).  
+You can also click on the google trend botton at the bottom of the page that redirect to the google-trend route in which you can select a keyword and a start date to display a chart of the google trend of the keyword over time.
 
-# **Explaination of the code**
-## Application Overview
-The application looks like this :  
-<img style="float: center; width: 300px" src="images\application_overview.png">
-## Extended explanations
-Concerning logger, it was in the /logger route at the beginning but in the end I also display loggers in the main page as it’s where I show everything. In itself its pretty simple, I have this in the home route:
-```python
-log_text = ""
-    if request.method == 'POST':
-        log_text = request.form.get('log')
-        print(log_text)
-```
 
-And this to display the log on the webpage:
-```html
-<script>
-        console.log("{{ log_text }}");
-</script>
-```
+# **GDPR**
 
-Hence when I enter a log it shows it on the app and on the browser (locally since Deta wasn’t working but it works the same):  
-<img style="float: center; width: 800px" src="images\log.png">  
+- ***What is it?***  
+GDPR means General Data Protection Regulation and the objective of this regulation is to lays down rules that relates with the data protection of people, concerning both the processing and the movement of the data (https://gdpr-info.eu/art-1-gdpr/)
+- **When has it been created and what was in place before?**
+Before, each country had its own data protection rules and there was no common agreement at the country scale to protect individual. GDPR appeared in 2018.
+- **What has it changed and why?**  
+GDPR changed everything by creating a general regulation at the EU scale. So now people have moire control over their data, they can discard from companies. Also companies have to handle data more carefully now. For example now for most of website we can accept or decline cookies.
 
-Concerning cookies, its pretty straigforward.  
-We can also use streamlit by running it in another terminal : 
-```bash
-PS C:\Users\antoi\OneDrive\Documents\COURS_2023_S2\Data_Sources\TP2> streamlit run streamlit_app.py
->> 
+# **Google Trend**
 
-  You can now view your Streamlit app in your browser.
+I added a new route in main named google-trend to perform the request and display the chart.  
+It looks like this :  
+<img style="float: center; width: 400px" src="images\ggtrend01.png">  
 
-  Local URL: http://localhost:8501
-  Network URL: http://192.168.1.17:8501
-```
-Now we can see this :  
-<img style="float: center; width: 500px" src="images\streamlit.png">  
+By changing the keywords and changing the timeframe we can display another graph :  
+<img style="float: center; width: 400px" src="images\ggtrend02.png">  
 
-So it works great, but I didn’t want to implement that on the main page as its not really interesting. The interesting part is to retrieve information from the cookies.
-Concerning oauth, I tried different things to make the user log into google to have permissions using this :
-```python
-credential_path = "client_secret.json"
-refresh_token = "refresh_token.json"
-scopes = ['https://www.googleapis.com/auth/analytics.readonly']
+Important to note that timeframe is the starting date of the acquisition and should respect this format :  
+* `timeframe`
 
-parser = argparse.ArgumentParser(
-    formatter_class=argparse.RawDescriptionHelpFormatter,
-    parents=[tools.argparser])
-flags = parser.parse_args([])
-flow = client.flow_from_clientsecrets(
-    credential_path, scope=scopes,
-    message=tools.message_if_missing(credential_path))
-storage = file.Storage(refresh_token)
-credentials = storage.get()
-if credentials is None or credentials.invalid:
-    credentials = tools.run_flow(flow, storage, flags)
-```
-And it works, except its not necessary as we can access the cookies of our analytic by login in using credentials of my “compte de service” key. We can use this “compte de service” and attribute the administration access on google console.
-In the end in my main page I have a button that redirect to a route that make the google request and calculate the number of new users and total users depending on the response using this code :
-```python
-# retreive value of metric header totalUsers
-    metric_header = [header.name for header in response.metric_headers]
-    metrics = [0 for i in metric_header]
-    for i in range(len(metric_header)):
-        for row in response.rows :
-            metrics[i]  += (int(row.metric_values[i].value))
-    # now metrics[0] is new users and metrics[1] is total users
-    print(metrics)
-    return jsonify({
-        "new_users": metrics[0],  # Update with the calculated new users count
-        "total_users": metrics[1],  # Update with the calculated total users count
-    })
-```
-Then I simply display it in my home page :
+  - Date to start from
+  - Defaults to last 5yrs, `'today 5-y'`.
+  - Everything `'all'`
+  - Specific dates, 'YYYY-MM-DD YYYY-MM-DD' example `'2016-12-14 2017-01-25'`
+  - Specific datetimes, 'YYYY-MM-DDTHH YYYY-MM-DDTHH' example `'2017-02-06T10 2017-02-12T07'`
+      - Note Time component is based off UTC
 
-<img style="float: center; width: 400px" src="images\number_visitors_1.png">  
+  - Current Time Minus Time Pattern:
 
-I can change the dates to specify my request :  
+    - By Month: ```'today #-m'``` where # is the number of months from that date to pull data for
+      - For example: ``'today 3-m'`` would get data from today to 3months ago
+      - **NOTE** Google uses UTC date as *'today'*
+      - **Works for 1, 3, 12 months only!**
 
-<img style="float: center; width: 400px" src="images\number_visitors_2.png">  
+    - Daily: ```'now #-d'``` where # is the number of days from that date to pull data for
+      - For example: ``'now 7-d'`` would get data from the last week
+      - **Works for 1, 7 days only!**
+
+    - Hourly: ```'now #-H'``` where # is the number of hours from that date to pull data for
+      - For example: ``'now 1-H'`` would get data from the last hour
+      - **Works for 1, 4 hours only!**
+
+
+
+
 
 
 
