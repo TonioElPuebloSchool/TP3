@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Google Trends Parameters</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Google Trends Parameters</h1>
+        <form method="POST">
+            <label for="keywords">Keywords:</label>
+            <input type="text" name="keywords" id="keywords" value="{{ keywords }}" required><br><br>
+            <label for="timeframe">Timeframe:</label>
+            <input type="text" name="timeframe" id="timeframe" value="{{ timeframe }}" required><br><br>
+            <label for="">Click the button below to update the chart</label><br>
+            <button type="submit" class="show-log">Update Parameters</button>
+        </form>
+        <br>
+        <label for="">Go back to home page</label><br><br><br>
+        <a href="/"><button class="btn-home">Back to Home</button></a> <!-- Apply the "btn-home" class -->
+    </div>
+    <div class="chart-container">
+        <canvas id="google-trend-chart"></canvas>
+    </div>
+</body>
+
+<script>
+    // Get the chart canvas element
+    const chartCanvas = document.getElementById('google-trend-chart');
+
+    // Extract the data from the server response
+    const trendsData = {{ trends_data.to_json(orient='split') | safe }};
+    console.log(trendsData);
+    console.log(' ');
+    // Format date strings
+    const formattedDates = trendsData.index.map(dateString => {
+        const date = new Date(dateString);
+        return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+    });
+
+    const chartData = {
+        labels: formattedDates, // Use the formatted dates as labels
+        datasets: [{
+            label: "{{ keywords }}",
+            // Retrieve only the numeric data values
+            data: trendsData.data.map(item => item[0]),
+        }],
+    };
+    // show label of chart data in console
+    console.log(chartData);
+    const myChart = new Chart(chartCanvas, {
+        type: 'line',
+        data: chartData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+        },
+    });
+</script>
+</html>

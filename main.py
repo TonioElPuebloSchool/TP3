@@ -4,8 +4,18 @@ import streamlit as st
 import argparse
 from oauth2client import client, file, tools
 import os
+import pandas as pd
+import lxml
+import pytrends
+from pytrends.request import TrendReq
+from pytrends.exceptions import ResponseError
 
 app = Flask(__name__)
+
+# define global variables to store user inputs (initialize with default values)
+user_keywords = "france"
+user_timeframe = "today 5-y"
+user_hl = "en-US"
 
 @app.route("/", methods=['GET', 'POST'])
 def root():
@@ -18,11 +28,56 @@ def root():
     if request.method == 'POST':
         log_text = request.form.get('log')
         print(log_text)
+        
+        global user_keywords
+        global user_timeframe
+        global user_hl
+        user_keywords = request.form.get('keywords')
+        user_timeframe = request.form.get('timeframe')
+        user_hl = request.form.get('hl')
     
     # Retrieve the number of visitors from Google Analytics
-    number_of_visitors = 10 #get_number_of_visitors()
+    number_of_visitors = 0 #get_number_of_visitors()
     
     return render_template('home.html', log_text=log_text, number_of_visitors=number_of_visitors)
+
+# add route to google trend
+@app.route("/google-trend", methods=['GET', 'POST'])
+def google_trend():
+    global user_keywords
+    global user_timeframe
+    global user_hl
+
+    if request.method == 'POST':
+        user_keywords = request.form.get('keywords')
+        user_timeframe = request.form.get('timeframe')
+
+    # Fetch Google Trends data based on user inputs
+    pytrends = TrendReq(hl='en-US', tz=360)
+    try:
+        if not user_keywords:
+            user_keywords = "france"
+        if not user_timeframe:
+            user_timeframe = "today 5-y"
+        #print(f"keywords: {user_keywords}, timeframe: {user_timeframe}, hl: {user_hl}")
+        keywords = user_keywords.split(",")
+        print(f"keywords: {keywords}, timeframe: {user_timeframe}")
+        pytrends.build_payload(keywords, cat=0, timeframe=user_timeframe, geo='', gprop='')
+        data_pytrend = pytrends.interest_over_time()
+    except ResponseError as e:
+        # Print the error message to the console
+        print(f"Google Trends request failed: {e}")
+        print('------FAILED------')
+        # set default parameters that work
+        keywords = ["france"]
+        user_timeframe = "today 5-y"
+        pytrends.build_payload(keywords, cat=0, timeframe=user_timeframe, geo='', gprop='')
+        data_pytrend = pytrends.interest_over_time()
+    
+    print('------SUCCESS------')
+    #print(data_pytrend.head())
+    return render_template('google_trend.html', keywords=user_keywords, timeframe=user_timeframe, hl=user_hl, trends_data=data_pytrend)
+
 
 # add route to calculate number of visitors
 @app.route('/refresh-visitors', methods=['GET'])

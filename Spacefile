@@ -7,4 +7,15 @@ micros:
     primary: true
     public: true
     run: gunicorn main:app
-    dev: .venv/bin/flask --app main run
+    dev: .venv/bin/flask --app main run --debug
+
+    presets:
+      - name: EMAIL
+        description: GA-EMAIL
+        default: "antoine.courbi@gmail.com"
+      - name: PASSWORD
+        description: GA-PASSWORD
+        default: "password"
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        description: authtoken
+        default: "datasource.json"

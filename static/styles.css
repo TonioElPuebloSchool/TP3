@@ -49,7 +49,7 @@ textarea {
   padding: 20;
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid #750b0b;
   border-radius: 5px;
 }
 
@@ -75,12 +75,14 @@ button.refresh-visitors {
 }
 
 input.date-input {
-  width: 50%;
-  padding: 10px; /* Reduce padding to make it smaller */
+  width: 100%;
+  padding: 10px;
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  margin: 5px 0;
+  margin-right: 10px;
 }
 
 /* Add styles for labels (bold text) */
@@ -102,4 +104,70 @@ button.refresh-visitors {
 /* Align the button to the left */
 button.refresh-visitors {
   text-align: left;
+}
+
+/* Add styles for the chart container */
+.chart-container {
+  max-width: 600px;
+  /* add a height to the container */
+  height: 400;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center; /* Center content within the container */
+  /* add bottom margin to the container */
+  margin-bottom: 20px;
+  /* add top margin to the container */
+  margin-top: 20px;
+}
+
+/* Add styles for form inputs */
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 5px 0;
+  margin-right: 10px;
+}
+
+/* Add styles for the "Show Chart" button */
+button.show-chart {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  float: left;
+}
+
+.ggtrend-container {
+  max-width: 600px;
+  /* add a height to the container */
+  height: 500;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center; /* Center content within the container */
+  /* add bottom margin to the container */
+  margin-bottom: 20px;
+  /* add top margin to the container */
+  margin-top: 20px;
+}
+
+button.btn-home {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  float: left;
 }
