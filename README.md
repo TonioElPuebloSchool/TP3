@@ -86,9 +86,51 @@ Important to note that timeframe is the starting date of the acquisition and sho
       - **Works for 1, 4 hours only!**
 
 
+# **Timer Log**
+*Everything you need to know is in the Timer_Log.ipynb file*  
 
+A decorator :
+```bash
+...add new functionality to an existing object without modifying its structure
+```
+*from [here](https://www.datacamp.com/tutorial/decorators-python)*
+```bash
+...a function that takes another function and extends the behavior of the latter function without explicitly modifying it
+```
+*from [here](https://realpython.com/primer-on-python-decorators/)*
 
+We implemented this decorator :
+```python
+def timing_decorator(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"{func.__name__} took {execution_time:.6f} seconds to execute.")
+        # now we return the execution time
+        return execution_time 
+    return wrapper
+```
+Looking on internet I found a nice topic([here](https://stackoverflow.com/questions/43956930/why-does-a-dictionary-count-in-some-cases-faster-than-collections-counter)) in which we can read the following :
+```bash
+[speaking about Counter]...So it isn't really surprising if other approaches are faster for short iterables. However for long iterables the check doesn't matter much and Counter should be faster
+```
+So we can assume that due to the small size of our text, the `Counter` object is slower than a dictionary.
 
+Concerning the increasing in iteration by 100, the results were the following :  
+<img style="float: center; width: 600px" src="images\TimerLogResults.png">  
+
+And finnally the conclusion on this part :  
+
+Ok so looking at the **graph distributino** of **execution times**, we can see that when increasing the number of **iterations**, its `Counter` that does a btter job, becuse the peak distribution density is higher than for the `dictionnary`, the distribution is less **spread out**.  
+
+Also when looking at the statistics :
+```bash
+Using Dictionary: Mean = 1.303031, Variance = 0.432673
+Using Counter: Mean = 1.327084, Variance = 0.285475
+```
+we can see that using `dictionnary` helps to have a better **mean value** (1.3 against 1.327) but the **variance** is higher (0.432 against 0.285) which means that the distribution is more **spread out** and again, depending on the use case, we might prefer to have a better variance (btter accuracy) or a better mean (better precision).
 
 
 Thanks for reading this far !
